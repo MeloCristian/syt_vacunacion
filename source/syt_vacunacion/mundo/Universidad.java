@@ -17,7 +17,9 @@
 package syt_vacunacion.mundo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,6 +52,7 @@ public class Universidad {
 	 */
 	private ArrayList<Dosis> dosis;
 	private ArrayList<Cita> citas;
+	private ArrayList<Horario> horarios;
 	// - - - - - - - - - - - - - - - - - - - - - -
 	// M�todos
 	// - - - - - - - - - - - - - - - - - - - - - -
@@ -89,7 +92,7 @@ public class Universidad {
 	
 	
 	/**
-	 * Registra una dosis en la lista de dosis
+	 * Registra una cita en la lista de citas
 	 * @param pId La identificaci�n del estudiante pId!=""
 	 * @param pFecha La fecha en la que se agenda la cita pFecha!="" 
 	 * @throws Exception Lanza una excepci�n si el estudiante con la identificaci�n que se proporciona como par�metro, no es encontrado
@@ -98,12 +101,38 @@ public class Universidad {
 		Estudiante miEstudiante = buscarEstudiante(pId);
 		if (miEstudiante != null)
 		{
+			if (!miEstudiante.darEstado()) {
+				throw new Exception("Estudiante no matriculado en ningun semestre");
+			}
+			if (new Date().getTime() > pFecha.getTime()) {
+				throw new Exception("La fecha ingresada debe ser mayor a la fecha actual");
+			}
 			Cita miCita = new Cita(miEstudiante,pFecha);
 			citas.add(miCita);
 		}
 		else
 		{
 			throw new Exception("El estudiante con Id:" + pId + " no fue encontrado");
+		}
+	}
+	
+	
+	/**
+	 * Registra un horario en la lista de horarios
+	 * @param pFecha: fecha a asignar al horario pFecha != null 
+	 * @param pEstado: estado a asignar al horario 
+	 * @throws Exception Lanza una excepci�n si la fecha ingresada en menor que la actual
+	 */
+	public void registrarhorario(Date pFecha, boolean pEstado) throws Exception {
+	
+		if (pFecha.getTime() > System.currentTimeMillis())
+		{		
+			Horario horario = new Horario(pFecha, pEstado);
+			horarios.add(horario);
+		}
+		else
+		{
+			throw new Exception("La fecha ingreasada no puede ser menor que la actual");
 		}
 	}
 	
@@ -269,6 +298,25 @@ public class Universidad {
 	public void modificarCitas(ArrayList<Cita> citas) {
 		this.citas = citas;
 	}
+
+	/**
+	 * Devuelve la lista de horarios
+	 * @return los horarios
+	 */
+	public ArrayList<Horario> darHorarios() {
+		return horarios;
+	}
+
+	/**
+	 * Modifica la lista de horarios
+	 * @param horarios: nueva lista de horarios a asignar
+	 */
+	public void modificarHorarios(ArrayList<Horario> horarios) {
+		this.horarios = horarios;
+	}
+	
+
+	
 	
 };
 
