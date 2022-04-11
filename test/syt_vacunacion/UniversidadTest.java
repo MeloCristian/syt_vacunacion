@@ -1,5 +1,7 @@
 package syt_vacunacion;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import junit.framework.TestCase;
@@ -56,10 +58,49 @@ public class UniversidadTest extends TestCase
 		}
 	}
 	
+	public void setupEscenario3( )
+	{
+	    universidad = new Universidad( );
+	    try {
+			universidad.agregarEstudiante("Facultad de Ingeniería", "Ingeniería de Sistemas", "100", "Adriana", true);
+	  		Date pFecha = new Date();
+					universidad.registrarDosis("100", pFecha, Dosis.PFIZER);
+					universidad.registrarDosis("100", pFecha, Dosis.PFIZER);
+					universidad.registrarDosis("100", pFecha, Dosis.PFIZER);
+					universidad.registrarDosis("100", pFecha, Dosis.PFIZER);
+		} catch (Exception e) {
+			fail("No debería pasar por acá");
+		}
+	}
+
+	public void setupEscenario4( )
+	{
+	    universidad = new Universidad( );
+	    try {
+		
+
+	  		DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    		Date pFecha1 = format.parse("4/6/2023 12:00:00 ");
+    		Date pFecha2 = format.parse("4/6/2023 13:00:00 ");
+    		Date pFecha3 = format.parse("4/6/2023 14:00:00 ");
+    		
+	  		universidad.agregarEstudiante("Facultad de Ingenierï¿½a", "Ingenierï¿½a de Sistemas", "100", "Adriana", true);
+			universidad.agregarEstudiante("Facultad de Ingenierï¿½a", "Ingenierï¿½a de Sistemas", "101", "Jeferson", true);
+			universidad.agregarEstudiante("Facultad de Ingenierï¿½a", "Ingenierï¿½a de Sistemas", "102", "Samuel", false);
+			//HORARIO
+			universidad.registrarhorario(pFecha1,true);
+			universidad.registrarhorario(pFecha2,true);
+			universidad.registrarhorario(pFecha3,true);
+					
+		} catch (Exception e) {
+			fail("No debería pasar por acá");
+		}
+	}
+
 	/**
 	 * Verificar que a un estudiante que no estï¿½ registrado, no se le puede registrar una dosis
 	 */
-	public void testRegistrarDosis1()
+	public void xtestRegistrarDosis1()
 	{
 		setupEscenario1();
 	    try {
@@ -75,8 +116,9 @@ public class UniversidadTest extends TestCase
 	/**
 	 * Verificar que a un estudiante que estï¿½ registrado pero no activo, no se le puede registrar una dosis
 	 */
-	public void testRegistrarDosis2()
+	public void xtestRegistrarDosis2()
 	{
+	
 		setupEscenario2();
 	    try {
 	    		Date pFecha = new Date();
@@ -92,7 +134,7 @@ public class UniversidadTest extends TestCase
 	/**
 	 * Verificar que a un estudiante que estï¿½ registrado, se le puede registrar una dosis
 	 */
-	public void testRegistrarDosis3()
+	public void xtestRegistrarDosis3()
 	{
 		setupEscenario2();
 	    try {
@@ -103,5 +145,119 @@ public class UniversidadTest extends TestCase
 				fail("No deberï¿½a pasar por acï¿½");
 			}
 	}
+	
+	/**
+	 *PRUEBAS REALIZADAS EN EL SPRINT 1
+	 */
+	
+	
+	/**
+	 * REGISTRAR SOLO 3 DOSIS POR USUARIO
+	 */
+	public void xtestRegistrarDosis4()
+	{
+		setupEscenario2();
+	    try {
+	    		Date pFecha = new Date();
+	    
+				universidad.registrarDosis("101", pFecha, Dosis.PFIZER);
+				universidad.registrarDosis("101", pFecha, Dosis.PFIZER);
+				universidad.registrarDosis("101", pFecha, Dosis.PFIZER);
+				universidad.registrarDosis("101", pFecha, Dosis.PFIZER);
+				assertEquals(4, universidad.darDosis().size());
+				fail("Permitio registrar mas de 3 dosis a un usuario");
+				assertEquals(1, universidad.darDosis().size());
+			} catch (Exception e) {
+				
+				System.out.print("\n" + e.getMessage());
+			}
+	}
 
+	
+	//REGISTRAR UNA CITA,  EL CUAL NO EXISTE EL USUARIO
+	public void xtestRegistrarCita1()
+	{
+		System.out.print("\n AHHHHHH" );
+		setupEscenario1();
+	    try {
+	    		Date pFecha = new Date();
+	    
+				universidad.registrarCita("500", pFecha);
+
+				assertEquals(1, universidad.darDosis().size());
+				fail("Permitio registrar una cita de un usuario que no existe");
+				assertEquals(1, universidad.darDosis().size());
+			} catch (Exception e) {
+				
+				System.out.print("\n" + e.getMessage());
+			}
+	}
+	//REGISTRAR UNA CITA,  EL CUAL  EL USUARIO NO ESTA ACTIVO
+	public void xtestRegistrarCita2()
+	{
+
+		setupEscenario2();
+	    try {
+	    		Date pFecha = new Date();
+	    
+				universidad.registrarCita("102", pFecha);
+
+				assertEquals(1, universidad.darDosis().size());
+				fail("Permitio registrar una cita de un usuario que no esta activo");
+				assertEquals(1, universidad.darDosis().size());
+			} catch (Exception e) {
+				
+				System.out.print("\n" + e.getMessage());
+			}
+	}
+	//REGISTRAR UNA CITA,  LA CUAL LA FECHA ES INFERIOR A LA ACTUAL
+	public void xtestRegistrarCita3()
+	{
+
+		setupEscenario2();
+	    try {
+	    		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+	    		Date pFecha = format.parse("1/2/2022");
+	    		System.out.print(pFecha);
+				universidad.registrarCita("100", pFecha);
+			} catch (Exception e) {
+				
+				System.out.print("\n" + e.getMessage());
+			}
+	}
+	
+//REGISTRAR CITA
+	public void xtestRegistrarCita4()
+	{
+
+		setupEscenario2();
+	    try {
+	    		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+	    		Date pFecha = format.parse("4/6/2023");
+	
+				universidad.registrarCita("100", pFecha);
+			} catch (Exception e) {
+				
+				System.out.print("\n" + e.getMessage());
+			}
+	}
+	
+	//Disponibilidad de horario
+	public void testRegistrarCita5()
+	{
+
+		setupEscenario4();
+	    try {
+	    		DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	       		Date pFecha1 = format.parse("4/6/2023 12:00:00 ");
+	    		System.out.print(pFecha1);
+				universidad.registrarCita("100", pFecha1);
+			} catch (Exception e) {
+				
+				System.out.print("\n" + e.getMessage());
+			}
+	}
 }
+
+
+

@@ -64,6 +64,8 @@ public class Universidad {
 	{
 		facultades = new ArrayList<Facultad>();
 		dosis = new ArrayList<Dosis>();
+		citas = new ArrayList<Cita>();
+		horarios = new ArrayList<Horario>();
 		// Carga las facultades por defecto
 		cargarFacultadesYProgramas();
 	}
@@ -81,14 +83,41 @@ public class Universidad {
 		Estudiante miEstudiante = buscarEstudiante(pId);
 		if (miEstudiante != null)
 		{
-			Dosis miDosis = new Dosis(miEstudiante,pFecha,pTipo);
-			dosis.add(miDosis);
-		}
+
+			int numeroDosis = 0;
+			
+			for (int i = 0; i < dosis.size(); i++) {
+				
+				Estudiante nuevoEstu = dosis.get(i).darEstudiante();
+	
+				if(nuevoEstu.darId().equals(pId)) {
+					//System.out.println(nuevoEstu);
+					numeroDosis++;
+				
+				}
+				//if(numeroDosis>3) return ;
+			}
+			
+		
+			
+			if(numeroDosis>2) {
+				throw new Exception("Maximo 3 dosis por usuario");
+			
+				
+			}else {
+				//System.out.println("entre");
+				Dosis miDosis = new Dosis(miEstudiante,pFecha,pTipo);
+				dosis.add(miDosis);
+	
+			}
+			
+				}
 		else
 		{
 			throw new Exception("El estudiante con Id:" + pId + " no fue encontrado");
 		}
 	}
+
 	
 	
 	/**
@@ -102,13 +131,45 @@ public class Universidad {
 		if (miEstudiante != null)
 		{
 			if (!miEstudiante.darEstado()) {
-				throw new Exception("Estudiante no matriculado en ningun semestre");
+				
+				throw new Exception("Estudiante no matriculado en ningun semestre o no activo");
 			}
+			
+			
 			if (new Date().getTime() > pFecha.getTime()) {
 				throw new Exception("La fecha ingresada debe ser mayor a la fecha actual");
 			}
-			Cita miCita = new Cita(miEstudiante,pFecha);
-			citas.add(miCita);
+			
+			
+			///VALIDAR HORARIO
+
+			
+			for (int i = 0; i < horarios.size(); i++) {
+				
+				Date fecha = horarios.get(i).darFecha();
+				boolean nuevoEstu = horarios.get(i).darEstado();
+				
+				if(pFecha.equals(fecha) && nuevoEstu) {
+					System.out.println("hola mamama");
+					Cita miCita = new Cita(miEstudiante,pFecha);
+					citas.add(miCita);
+					break;
+				}
+				//if(numeroDosis>3) return ;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	
 		}
 		else
 		{
@@ -117,7 +178,7 @@ public class Universidad {
 	}
 	
 	
-	/**
+	/**f
 	 * Registra un horario en la lista de horarios
 	 * @param pFecha: fecha a asignar al horario pFecha != null 
 	 * @param pEstado: estado a asignar al horario 
@@ -287,7 +348,7 @@ public class Universidad {
 	 * @param citas La lista de citas a modificar
 	 */
 	public ArrayList<Cita> darCitas(){
-		return this.citas;
+		return citas;
 	}
 	
 	
@@ -296,7 +357,7 @@ public class Universidad {
 	 * @return Las citas
 	 */
 	public void modificarCitas(ArrayList<Cita> citas) {
-		this.citas = citas;
+		citas = citas;
 	}
 
 	/**
