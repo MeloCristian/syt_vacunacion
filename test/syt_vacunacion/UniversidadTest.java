@@ -73,16 +73,16 @@ public class UniversidadTest extends TestCase {
 		try {
 
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			Date pFecha1 = format.parse("4/6/2023 12:00:00 ");
-			Date pFecha2 = format.parse("4/6/2023 13:00:00 ");
-			Date pFecha3 = format.parse("4/6/2023 14:00:00 ");
+			Date pFecha1 = format.parse("4/6/2023 12:00:00");
+			Date pFecha2 = format.parse("4/6/2023 13:00:00");
+			Date pFecha3 = format.parse("4/6/2023 14:00:00");
 
 			universidad.agregarEstudiante("Facultad de Ingenier�a", "Ingenier�a de Sistemas", "100", "Adriana", true);
 			universidad.agregarEstudiante("Facultad de Ingenier�a", "Ingenier�a de Sistemas", "101", "Jeferson", true);
 			universidad.agregarEstudiante("Facultad de Ingenier�a", "Ingenier�a de Sistemas", "102", "Samuel", false);
 			// HORARIO
-			universidad.registrarhorario(pFecha1, true);
-			universidad.registrarhorario(pFecha2, true);
+			universidad.registrarhorario(pFecha1, false);
+			universidad.registrarhorario(pFecha2, false);
 			universidad.registrarhorario(pFecha3, true);
 
 		} catch (Exception e) {
@@ -185,7 +185,7 @@ public class UniversidadTest extends TestCase {
 		try {
 			Date pFecha = new Date();
 
-			universidad.registrarCita("500", new Horario(new Date(), false));
+			universidad.registrarCita("102", new Horario(pFecha, false));
 			assertEquals(1, universidad.darCitas().size());
 			fail("Permitio registrar una cita de un usuario que no esta activo");
 		} catch (Exception e) {
@@ -233,12 +233,11 @@ public class UniversidadTest extends TestCase {
 		setupEscenario4();
 		try {
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			Date pFecha1 = format.parse("4/6/2026 12:00:00 ");
+			Date pFecha1 = format.parse("4/6/2023 14:00:00");
 
-			universidad.registrarCita("500", new Horario(new Date(), false));
+			universidad.registrarCita("101", new Horario(pFecha1, false));
 			;
 		} catch (Exception e) {
-
 			System.out.print("\n" + e.getMessage());
 		}
 	}

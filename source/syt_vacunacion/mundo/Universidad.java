@@ -116,7 +116,6 @@ public class Universidad {
 		Estudiante miEstudiante = buscarEstudiante(pId);
 		if (miEstudiante != null) {
 			if (!miEstudiante.darEstado()) {
-
 				throw new Exception("Estudiante no matriculado en ningun semestre o no activo");
 			}
 
@@ -127,7 +126,7 @@ public class Universidad {
 			for (int i = 0; i < horarios.size(); i++) {
 
 				if (horarios.get(i).equals(pHorario)) {
-					if (horario.darEstado()) {
+					if (!horarios.get(i).darEstado()) {
 						horario = horarios.get(i);
 						horarios.get(i).modificarEstado(true);
 						horario.modificarEstado(true);
@@ -140,13 +139,16 @@ public class Universidad {
 			}
 
 			if (horario == null) {
+				
 				throw new Exception("El horario a asignar no se encuentra registrado");
 			}
 
 			Cita newCita = new Cita(miEstudiante, horario);
 			citas.add(newCita);
 
+			
 		} else {
+			System.out.println("pasa");
 			throw new Exception("El estudiante con Id:" + pId + " no fue encontrado");
 		}
 	}
