@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Cita {
 	
-	private Date fecha;
+	private Horario horario;
 	private Estudiante estudiante;
 	
 	/**
@@ -12,8 +12,8 @@ public class Cita {
 	 * @param estudiante El estudiante al que se le asigna la cita estudiante!=null
 	 * @param fecha La fecha en la cual se agenda la cita, fecha!=null
 	 */
-	public Cita(Estudiante estudiante, Date fecha) {
-		this.fecha = fecha;
+	public Cita(Estudiante estudiante, Horario horario) {
+		this.horario = horario;
 		this.estudiante = estudiante;		
 	}
 	
@@ -35,19 +35,19 @@ public class Cita {
 	}
 	
 	/**
-	 * Devuelve la fecha
-	 * @return La fecha
+	 * Devuelve la el horario de la cita
+	 * @return El horario
 	 */
-	public Date darFecha() {
-		return this.fecha;
+	public Horario darHorario() {
+		return this.horario;
 	}
 	
 	/**
-	 * Modifica la fecha
-	 * @param fecha La fecha a modificar
+	 * Modifica el horario de la cita
+	 * @param horario: le nuevo horario a asignar
 	 */
-	public void modificarFecha(Date fecha) {
-		this.fecha = fecha;
+	public void modificarHorario(Horario horario) {
+		this.horario = horario;
 	}
 
 }

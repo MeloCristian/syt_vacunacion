@@ -57,7 +57,7 @@ public class Horario {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Horario horario = (Horario) o;
-		return fecha.equals(horario.darFecha()) && estado == horario.darEstado();
+		return fecha.equals(horario.darFecha());
 		
 	}
 	

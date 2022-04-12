@@ -16,29 +16,21 @@
  */
 package syt_vacunacion.mundo;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * $Id$
- * Universidad XX (San Juan de Pasto - Colombia)
- * Programa Ingenier�a de Sistemas
- * Licenciado bajo el esquema Academic Free License version 2.1 
- *
- * Caso de estudio: Seguimiento y trazabilidad a la vacunaci�n
- * Autor: Giovanni Hern�ndez P. - 19-febrero-2022
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- */
 public class Universidad {
 
 	// - - - - - - - - - - - - - - - - - - - - - -
 	// Constantes
 	// - - - - - - - - - - - - - - - - - - - - - -
 	public final static int NUMERO_DE_DOSIS = 3;
-	
+
 	// - - - - - - - - - - - - - - - - - - - - - -
 	// Atributos
 	// - - - - - - - - - - - - - - - - - - - - - -
@@ -46,7 +38,7 @@ public class Universidad {
 	 * Las facultades de la Universidad
 	 */
 	private ArrayList<Facultad> facultades;
-	
+
 	/**
 	 * Las dosis aplicadas a un estudiante
 	 */
@@ -60,8 +52,7 @@ public class Universidad {
 	/**
 	 * Constructor de la clase Universidad
 	 */
-	public Universidad() 
-	{
+	public Universidad() {
 		facultades = new ArrayList<Facultad>();
 		dosis = new ArrayList<Dosis>();
 		citas = new ArrayList<Cita>();
@@ -69,187 +60,155 @@ public class Universidad {
 		// Carga las facultades por defecto
 		cargarFacultadesYProgramas();
 	}
-	
-	
+
 	/**
 	 * Registra una dosis en la lista de dosis
-	 * @param pId La identificaci�n del estudiante pId!=""
-	 * @param pFecha La fecha de la aplicaci�n de la dosis pFecha!="" 
-	 * @param pTipo El tipo de vacuana aplicado al estudiante pTipo!=""
-	 * @throws Exception Lanza una excepci�n si el estudiante con la identificaci�n que se proporciona como par�metro, no es encontrado
-	 * 					 lanza una excepci�n si el estudainte tiene m�s de NUMERO_DE_DOSIS
+	 * 
+	 * @param pId    La identificaci�n del estudiante pId!=""
+	 * @param pFecha La fecha de la aplicaci�n de la dosis pFecha!=""
+	 * @param pTipo  El tipo de vacuana aplicado al estudiante pTipo!=""
+	 * @throws Exception Lanza una excepci�n si el estudiante con la identificaci�n
+	 *                   que se proporciona como par�metro, no es encontrado lanza
+	 *                   una excepci�n si el estudainte tiene m�s de NUMERO_DE_DOSIS
 	 */
 	public void registrarDosis(String pId, Date pFecha, String pTipo) throws Exception {
 		Estudiante miEstudiante = buscarEstudiante(pId);
-		if (miEstudiante != null)
-		{
+		if (miEstudiante != null) {
 
 			int numeroDosis = 0;
-			
+
 			for (int i = 0; i < dosis.size(); i++) {
-				
+
 				Estudiante nuevoEstu = dosis.get(i).darEstudiante();
-	
-				if(nuevoEstu.darId().equals(pId)) {
-					//System.out.println(nuevoEstu);
+
+				if (nuevoEstu.darId().equals(pId)) {
+					// System.out.println(nuevoEstu);
 					numeroDosis++;
-				
+
 				}
-				//if(numeroDosis>3) return ;
+				// if(numeroDosis>3) return ;
 			}
-			
-		
-			
-			if(numeroDosis>2) {
+
+			if (numeroDosis > 2) {
 				throw new Exception("Maximo 3 dosis por usuario");
-			
-				
-			}else {
-				//System.out.println("entre");
-				Dosis miDosis = new Dosis(miEstudiante,pFecha,pTipo);
+
+			} else {
+				// System.out.println("entre");
+				Dosis miDosis = new Dosis(miEstudiante, pFecha, pTipo);
 				dosis.add(miDosis);
-	
+
 			}
-			
-				}
-		else
-		{
+
+		} else {
 			throw new Exception("El estudiante con Id:" + pId + " no fue encontrado");
 		}
 	}
 
-	
-	
 	/**
 	 * Registra una cita en la lista de citas
-	 * @param pId La identificaci�n del estudiante pId!=""
-	 * @param pFecha La fecha en la que se agenda la cita pFecha!="" 
-	 * @throws Exception Lanza una excepci�n si el estudiante con la identificaci�n que se proporciona como par�metro, no es encontrado
+	 * 
+	 * @param pId    La identificaci�n del estudiante pId!=""
+	 * @param pFecha La fecha en la que se agenda la cita pFecha!=""
+	 * @throws Exception Lanza una excepci�n si el estudiante con la identificaci�n
+	 *                   que se proporciona como par�metro, no es encontrado
 	 */
-	public void registrarCita(String pId, Date pFecha) throws Exception {
+	public void registrarCita(String pId, Horario pHorario) throws Exception {
 		Estudiante miEstudiante = buscarEstudiante(pId);
-		if (miEstudiante != null)
-		{
+		if (miEstudiante != null) {
 			if (!miEstudiante.darEstado()) {
-				
+
 				throw new Exception("Estudiante no matriculado en ningun semestre o no activo");
 			}
-			
-			
-			if (new Date().getTime() > pFecha.getTime()) {
-				throw new Exception("No es posible registrar la cita, porque La fecha ingresada debe ser mayor a la fecha actual");
-			}
-			
-			
-			///VALIDAR HORARIO
 
-			boolean horarioDispo=false;
+			Horario horario = null;
+			/*
+			 * Validar disponibilidad del horario
+			 */
 			for (int i = 0; i < horarios.size(); i++) {
-				
-				Date fecha = horarios.get(i).darFecha();
-				boolean nuevoEstu = horarios.get(i).darEstado();
-				
-				if(pFecha.equals(fecha) && nuevoEstu) {
-					horarioDispo=true;
-					
-					break;
+
+				if (horarios.get(i).equals(pHorario)) {
+					if (horario.darEstado()) {
+						horario = horarios.get(i);
+						horarios.get(i).modificarEstado(true);
+						horario.modificarEstado(true);
+						break;
+					} else {
+						throw new Exception("El horario ya se eceuntra asignado");
+					}
 				}
-			
+
 			}
-			
-			if(horarioDispo) {
-			
-				Cita miCita = new Cita(miEstudiante,pFecha);
-				citas.add(miCita);
-			}else {
-				throw new Exception("Horario no disponible");
+
+			if (horario == null) {
+				throw new Exception("El horario a asignar no se encuentra registrado");
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-	
-		}
-		else
-		{
+
+			Cita newCita = new Cita(miEstudiante, horario);
+			citas.add(newCita);
+
+		} else {
 			throw new Exception("El estudiante con Id:" + pId + " no fue encontrado");
 		}
 	}
-	
-	
-	/**f
-	 * Registra un horario en la lista de horarios
-	 * @param pFecha: fecha a asignar al horario pFecha != null 
-	 * @param pEstado: estado a asignar al horario 
-	 * @throws Exception Lanza una excepci�n si la fecha ingresada en menor que la actual
+
+	/**
+	 * f Registra un horario en la lista de horarios
+	 * 
+	 * @param pFecha:  fecha a asignar al horario pFecha != null
+	 * @param pEstado: estado a asignar al horario
+	 * @throws Exception Lanza una excepci�n si la fecha ingresada en menor que la
+	 *                   actual
 	 */
 	public void registrarhorario(Date pFecha, boolean pEstado) throws Exception {
-	
-		if (pFecha.getTime() > System.currentTimeMillis())
-		{		
+
+		if (pFecha.getTime() > System.currentTimeMillis()) {
 			Horario horario = new Horario(pFecha, pEstado);
 			horarios.add(horario);
-		}
-		else
-		{
+		} else {
 			throw new Exception("La fecha ingreasada no puede ser menor que la actual");
 		}
 	}
-	
-	
+
 	/**
 	 * Agrega un nuevo estudiante a la lista de estudiantes de un programa
+	 * 
 	 * @param pNombreFacultad El nombre de la facultad pNombreFacultad!=""
 	 * @param pNombrePrograma El nombre del programa pNombrePrograma!=""
-	 * @param pId La identificaci�n del estudiante pId!=""
-	 * @param pNombre El nombre del estudiante pNombre!=""
-	 * @param pEstado El estado de matr�cula del estudiante pEstado=true || pEstado=false
-	 * @throws Exception Lanza una excepci�n si la facultad no se encuentra
-	 *                   Lanza una excepci�n si el programa no se encuentra
+	 * @param pId             La identificaci�n del estudiante pId!=""
+	 * @param pNombre         El nombre del estudiante pNombre!=""
+	 * @param pEstado         El estado de matr�cula del estudiante pEstado=true ||
+	 *                        pEstado=false
+	 * @throws Exception Lanza una excepci�n si la facultad no se encuentra Lanza
+	 *                   una excepci�n si el programa no se encuentra
 	 */
-	public void agregarEstudiante(String pNombreFacultad, String pNombrePrograma, String pId, String pNombre, boolean pEstado) throws Exception
-	{
+	public void agregarEstudiante(String pNombreFacultad, String pNombrePrograma, String pId, String pNombre,
+			boolean pEstado) throws Exception {
 		Facultad mifacultad = buscarFacultad(pNombreFacultad);
-		if(mifacultad != null)
-		{
+		if (mifacultad != null) {
 			Programa miPrograma = mifacultad.buscarPrograma(pNombrePrograma);
-			if(miPrograma != null)
-			{
+			if (miPrograma != null) {
 				miPrograma.agregarEstudiante(pId, pNombre, pEstado);
-			}
-			else
-			{
+			} else {
 				throw new Exception("El programa con nombre " + pNombrePrograma + " no fue encontrado");
 			}
-		}
-		else
-		{
+		} else {
 			throw new Exception("La facultad con nombre " + pNombreFacultad + " no fue encontrada");
 		}
 	}
 
 	/**
 	 * Buscar un estudiante por la identificaci�n.
+	 * 
 	 * @param pId La identificaci�n del estudiante
 	 * @return devuelve el estudiante encontrado, de lo contrario null;
 	 */
-	public Estudiante buscarEstudiante(String pId) 
-	{
+	public Estudiante buscarEstudiante(String pId) {
 		Estudiante estudianteBuscado = null;
 		boolean encontrado = false;
-		for (int indice = 0; indice < facultades.size() && !encontrado ; indice++) 
-		{
+		for (int indice = 0; indice < facultades.size() && !encontrado; indice++) {
 			Facultad miFacultad = (Facultad) facultades.get(indice);
 			Estudiante miEstudiante = miFacultad.buscarEstudiante(pId);
-			if(miEstudiante != null)
-			{
+			if (miEstudiante != null) {
 				encontrado = true;
 				estudianteBuscado = miEstudiante;
 			}
@@ -259,17 +218,16 @@ public class Universidad {
 
 	/**
 	 * Buscar una facultad dado su nombre.
+	 * 
 	 * @param pNombre El nombre de la facultad pNombre!=""
 	 * @return devuelve la facultad encontrada, de lo contrario null;
 	 */
 	public Facultad buscarFacultad(String pNombre) {
-		Facultad facultadBuscada=null;
-		boolean encontrado=false;
-		for (int indice = 0; indice < facultades.size() && !encontrado ; indice++) 
-		{
+		Facultad facultadBuscada = null;
+		boolean encontrado = false;
+		for (int indice = 0; indice < facultades.size() && !encontrado; indice++) {
 			Facultad miFacultad = (Facultad) facultades.get(indice);
-			if(miFacultad.darNombre().equals(pNombre))
-			{
+			if (miFacultad.darNombre().equals(pNombre)) {
 				encontrado = true;
 				facultadBuscada = miFacultad;
 			}
@@ -279,28 +237,28 @@ public class Universidad {
 
 	/**
 	 * Busca un programa por el nombre
+	 * 
 	 * @param pNombre El nombre del programa
 	 * @return devuelve el programa encontrado, de lo contrario null;
 	 */
 	public Programa buscarPrograma(String pNombre) {
 		return null;
 	}
-	
+
 	/**
 	 * Agrega una nueva Facultad a la lista de facultades
+	 * 
 	 * @param pNombre El nombre de la facultad pNombre!=""
 	 */
-	public void agregarFacultad(String pNombre)
-	{
+	public void agregarFacultad(String pNombre) {
 		Facultad mifacultad = new Facultad(pNombre);
 		facultades.add(mifacultad);
 	}
-	
+
 	/**
 	 * Carga la facultades por defecto de la Universidad
 	 */
-	public void cargarFacultadesYProgramas()
-	{
+	public void cargarFacultadesYProgramas() {
 		agregarFacultad("Facultad de Ingenier�a");
 		Facultad miFacultad = buscarFacultad("Facultad de Ingenier�a");
 		miFacultad.agregarPrograma("Ingenier�a de Sistemas");
@@ -312,54 +270,54 @@ public class Universidad {
 		agregarFacultad("Facultad de Ciencias Econ�micas y Administrativas");
 	}
 
-
 	/**
 	 * Devuelve la lista de facultades
+	 * 
 	 * @return las facultades
 	 */
 	public ArrayList<Facultad> darFacultades() {
 		return facultades;
 	}
 
-
 	/**
 	 * Modifica la lista de facultades
+	 * 
 	 * @param facultades La lista de facultades a modificar
 	 */
 	public void modificarFacultades(ArrayList<Facultad> facultades) {
 		this.facultades = facultades;
 	}
 
-
 	/**
 	 * Devuelve la lista de dosis
+	 * 
 	 * @return Las dosis
 	 */
 	public ArrayList<Dosis> darDosis() {
 		return dosis;
 	}
 
-
 	/**
 	 * Modifica la lista de dosis
+	 * 
 	 * @param dosis La lista de dosis a modificar
 	 */
 	public void modificarDosis(ArrayList<Dosis> dosis) {
 		this.dosis = dosis;
 	}
-	
-	
+
 	/**
 	 * Modifica la lista de citas
+	 * 
 	 * @param citas La lista de citas a modificar
 	 */
-	public ArrayList<Cita> darCitas(){
+	public ArrayList<Cita> darCitas() {
 		return citas;
 	}
-	
-	
+
 	/**
 	 * Devuelve la lista de citas
+	 * 
 	 * @return Las citas
 	 */
 	public void modificarCitas(ArrayList<Cita> citas) {
@@ -368,6 +326,7 @@ public class Universidad {
 
 	/**
 	 * Devuelve la lista de horarios
+	 * 
 	 * @return los horarios
 	 */
 	public ArrayList<Horario> darHorarios() {
@@ -376,27 +335,11 @@ public class Universidad {
 
 	/**
 	 * Modifica la lista de horarios
+	 * 
 	 * @param horarios: nueva lista de horarios a asignar
 	 */
 	public void modificarHorarios(ArrayList<Horario> horarios) {
 		this.horarios = horarios;
 	}
-	
 
-	
-	
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
