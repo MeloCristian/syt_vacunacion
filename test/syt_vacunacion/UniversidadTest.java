@@ -177,34 +177,30 @@ public class UniversidadTest extends TestCase
 	//REGISTRAR UNA CITA,  EL CUAL NO EXISTE EL USUARIO
 	public void xtestRegistrarCita1()
 	{
-		System.out.print("\n AHHHHHH" );
+
 		setupEscenario1();
 	    try {
 	    		Date pFecha = new Date();
-	    
 				universidad.registrarCita("500", pFecha);
-
-				assertEquals(1, universidad.darDosis().size());
+				assertEquals(1, universidad.darCitas().size());
 				fail("Permitio registrar una cita de un usuario que no existe");
-				assertEquals(1, universidad.darDosis().size());
+				
 			} catch (Exception e) {
 				
 				System.out.print("\n" + e.getMessage());
 			}
 	}
-	//REGISTRAR UNA CITA,  EL CUAL  EL USUARIO NO ESTA ACTIVO
+	//REGISTRAR UNA CITA, CUANDO   EL ESTUDIANTE NO ESTE ACTIVO
 	public void xtestRegistrarCita2()
 	{
 
-		setupEscenario2();
+		setupEscenario4();
 	    try {
 	    		Date pFecha = new Date();
 	    
 				universidad.registrarCita("102", pFecha);
-
-				assertEquals(1, universidad.darDosis().size());
+				assertEquals(1, universidad.darCitas().size());
 				fail("Permitio registrar una cita de un usuario que no esta activo");
-				assertEquals(1, universidad.darDosis().size());
 			} catch (Exception e) {
 				
 				System.out.print("\n" + e.getMessage());
@@ -216,10 +212,11 @@ public class UniversidadTest extends TestCase
 
 		setupEscenario2();
 	    try {
-	    		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-	    		Date pFecha = format.parse("1/2/2022");
-	    		System.out.print(pFecha);
+	    	DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	    		Date pFecha = format.parse("4/6/2021 12:00:00 ");
 				universidad.registrarCita("100", pFecha);
+				assertEquals(1, universidad.darCitas().size());
+				fail("Permitio registrar una cita la cual es enferior a la actual");
 			} catch (Exception e) {
 				
 				System.out.print("\n" + e.getMessage());
@@ -230,12 +227,14 @@ public class UniversidadTest extends TestCase
 	public void xtestRegistrarCita4()
 	{
 
-		setupEscenario2();
+		setupEscenario4();
 	    try {
-	    		DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-	    		Date pFecha = format.parse("4/6/2023");
+	    		DateFormat format =new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	    		Date pFecha1 = format.parse("4/6/2023 12:00:00 ");
 	
-				universidad.registrarCita("100", pFecha);
+				universidad.registrarCita("100", pFecha1);
+				assertEquals(0, universidad.darCitas().size());
+				fail("La cita no se registro");
 			} catch (Exception e) {
 				
 				System.out.print("\n" + e.getMessage());
@@ -249,8 +248,8 @@ public class UniversidadTest extends TestCase
 		setupEscenario4();
 	    try {
 	    		DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	       		Date pFecha1 = format.parse("4/6/2023 12:00:00 ");
-	    		System.out.print(pFecha1);
+	       		Date pFecha1 = format.parse("4/6/2026 12:00:00 ");
+	  
 				universidad.registrarCita("100", pFecha1);
 			} catch (Exception e) {
 				

@@ -137,27 +137,33 @@ public class Universidad {
 			
 			
 			if (new Date().getTime() > pFecha.getTime()) {
-				throw new Exception("La fecha ingresada debe ser mayor a la fecha actual");
+				throw new Exception("No es posible registrar la cita, porque La fecha ingresada debe ser mayor a la fecha actual");
 			}
 			
 			
 			///VALIDAR HORARIO
 
-			
+			boolean horarioDispo=false;
 			for (int i = 0; i < horarios.size(); i++) {
 				
 				Date fecha = horarios.get(i).darFecha();
 				boolean nuevoEstu = horarios.get(i).darEstado();
 				
 				if(pFecha.equals(fecha) && nuevoEstu) {
-					System.out.println("hola mamama");
-					Cita miCita = new Cita(miEstudiante,pFecha);
-					citas.add(miCita);
+					horarioDispo=true;
+					
 					break;
 				}
-				//if(numeroDosis>3) return ;
+			
 			}
 			
+			if(horarioDispo) {
+			
+				Cita miCita = new Cita(miEstudiante,pFecha);
+				citas.add(miCita);
+			}else {
+				throw new Exception("Horario no disponible");
+			}
 			
 			
 			
