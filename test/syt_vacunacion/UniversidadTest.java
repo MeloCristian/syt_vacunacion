@@ -169,7 +169,7 @@ public class UniversidadTest extends TestCase {
 		setupEscenario1();
 		try {
 			Date pFecha = new Date();
-			universidad.registrarCita("500", new Horario(new Date(), false));
+			universidad.registrarCita("100", new Horario(new Date(), false));
 			assertEquals(1, universidad.darCitas().size());
 			fail("Permitio registrar una cita de un usuario que no existe");
 
@@ -194,15 +194,15 @@ public class UniversidadTest extends TestCase {
 		}
 	}
 
-	// REGISTRAR UNA CITA, LA CUAL LA FECHA ES INFERIOR A LA ACTUAL
+	// REGISTRAR UN HORARIO, EL CUAL SU FECHA ES INFERIOR A LA  FECHA ACTUAL
 	public void xtestRegistrarCita3() {
 
-		setupEscenario2();
+		setupEscenario1();
 		try {
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			Date pFecha = format.parse("4/6/2021 12:00:00 ");
-			universidad.registrarCita("500", new Horario(new Date(), false));
-			assertEquals(1, universidad.darCitas().size());
+			universidad.registrarhorario(pFecha, false);
+			assertEquals(1, universidad.darHorarios().size());
 			fail("Permitio registrar una cita la cual es enferior a la actual");
 		} catch (Exception e) {
 
@@ -210,17 +210,18 @@ public class UniversidadTest extends TestCase {
 		}
 	}
 
-//REGISTRAR CITA
+//REGISTRAR CITA NO VALIDA
 	public void xtestRegistrarCita4() {
 
 		setupEscenario4();
 		try {
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-			Date pFecha1 = format.parse("4/6/2023 12:00:00 ");
+			Date pFecha1 = format.parse("4/6/2023 13:00:00");
 
-			universidad.registrarCita("500", new Horario(new Date(), false));
-			assertEquals(0, universidad.darCitas().size());
-			fail("La cita no se registro");
+			universidad.registrarCita("105", new Horario(pFecha1, false));
+			
+			assertEquals(1, universidad.darCitas().size());
+			fail("Error la cita cita se registro");
 		} catch (Exception e) {
 
 			System.out.print("\n" + e.getMessage());
@@ -228,15 +229,35 @@ public class UniversidadTest extends TestCase {
 	}
 
 	// Disponibilidad de horario
-	public void testRegistrarCita5() {
+	public void xtestRegistrarCita5() {
 
 		setupEscenario4();
 		try {
 			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			Date pFecha1 = format.parse("4/6/2023 14:00:00");
 
-			universidad.registrarCita("101", new Horario(pFecha1, false));
-			;
+			universidad.registrarCita("100", new Horario(pFecha1, false));
+			assertEquals(1, universidad.darCitas().size());
+			fail("Permitio registrar una cita cuyo horario ya esta asignado");
+			
+		} catch (Exception e) {
+			System.out.print("\n" + e.getMessage());
+		}
+	}
+	
+	
+	// Horario no creado
+	public void testRegistrarCita6() {
+
+		setupEscenario4();
+		try {
+			DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			Date pFecha1 = format.parse("4/6/2025 14:00:00");
+
+			universidad.registrarCita("100", new Horario(pFecha1, false));
+			assertEquals(1, universidad.darCitas().size());
+			fail("Permitio registrar una cita cuyo horario no esta creado");
+			
 		} catch (Exception e) {
 			System.out.print("\n" + e.getMessage());
 		}

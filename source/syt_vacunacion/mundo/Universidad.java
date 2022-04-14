@@ -142,13 +142,13 @@ public class Universidad {
 				
 				throw new Exception("El horario a asignar no se encuentra registrado");
 			}
-
+			
 			Cita newCita = new Cita(miEstudiante, horario);
 			citas.add(newCita);
 
 			
 		} else {
-			System.out.println("pasa");
+			
 			throw new Exception("El estudiante con Id:" + pId + " no fue encontrado");
 		}
 	}
@@ -162,7 +162,7 @@ public class Universidad {
 	 *                   actual
 	 */
 	public void registrarhorario(Date pFecha, boolean pEstado) throws Exception {
-
+		
 		if (pFecha.getTime() > System.currentTimeMillis()) {
 			Horario horario = new Horario(pFecha, pEstado);
 			horarios.add(horario);
